@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -128,28 +129,38 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
-      throw new Error('Please check your email and password');
-    }
-
     try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
+        // Hacer una petición POST al endpoint de inicio de sesión
+        const response = await axios.post('http://localhost:5000/login', {
+            email,
+            password
+        });
+
+        // Si la autenticación es exitosa, almacenar el token y los datos del usuario
+        const { token, user } = response.data;
+
+        // Almacenar el token en sessionStorage (opcional)
+        window.sessionStorage.setItem('token', token);
+
+        // Almacenar el estado de autenticación
+        window.sessionStorage.setItem('authenticated', 'true');
+
+        // Despachar la acción con los datos del usuario
+        dispatch({
+            type: HANDLERS.SIGN_IN,
+            payload: user
+        });
+
+    } catch (error) {
+        // Manejar errores, por ejemplo, si las credenciales son incorrectas
+        if (error.response && error.response.status === 401) {
+            throw new Error('Please check your email and password');
+        } else {
+            console.error('Error during sign in:', error);
+            throw new Error('Error during sign in');
+        }
     }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
+};
 
   const signUp = async (email, name, password) => {
     throw new Error('Sign up is not implemented');
