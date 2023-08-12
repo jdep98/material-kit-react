@@ -67,7 +67,7 @@ export const AuthProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const initialized = useRef(false);  
 
-  const initialize = async () => {
+const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
     if (initialized.current) {
       return;
@@ -84,19 +84,24 @@ export const AuthProvider = (props) => {
     }
 
     if (isAuthenticated) {      
-      const userString = window.sessionStorage.getItem('user');
-      const user = JSON.parse(userString);
-
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
-      });
+      const token = window.sessionStorage.getItem('token');
+      if (token) {
+        try {
+          const user = jwt_decode(token);
+          dispatch({
+            type: HANDLERS.INITIALIZE,
+            payload: user
+          });
+        } catch (error) {
+          console.error('Error decoding the token:', error);
+        }
+      }
     } else {
       dispatch({
         type: HANDLERS.INITIALIZE
       });
     }
-  };
+};
 
   useEffect(
     () => {
@@ -115,16 +120,13 @@ export const AuthProvider = (props) => {
         });
 
         // Si la autenticación es exitosa, almacenar el token y los datos del usuario
-        const { token, user, data } = response.data;
+        const { token, user } = response.data;
 
         // Almacenar el token en sessionStorage (opcional)
         window.sessionStorage.setItem('token', token);
 
         // Almacenar el estado de autenticación
-        window.sessionStorage.setItem('authenticated', 'true'); 
-        
-        // Almacenar los datos del usuario
-        window.sessionStorage.setItem('user', JSON.stringify(data));        
+        window.sessionStorage.setItem('authenticated', 'true');     
 
         // Despachar la acción con los datos del usuario
         dispatch({

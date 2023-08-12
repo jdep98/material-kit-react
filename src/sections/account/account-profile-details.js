@@ -10,34 +10,26 @@ import {
   TextField,
   Unstable_Grid2 as Grid
 } from '@mui/material';
-
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  },
-  {
-    value: 'los-angeles',
-    label: 'Los Angeles'
-  }
-];
+import jwt_decode from 'jwt-decode';
 
 export const AccountProfileDetails = () => {
+
+  const token = window.sessionStorage.getItem('token');
+  let user = null;
+
+  if (token) {
+    try {
+      user = jwt_decode(token);      
+    } catch (error) {
+      console.error('Error decoding the token:', error);
+    }
+  }
+
   const [values, setValues] = useState({
-    firstName: 'Anika',
-    lastName: 'Visser',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'los-angeles',
-    country: 'USA'
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phone: ''
   });
 
   const handleChange = useCallback(
@@ -126,43 +118,6 @@ export const AccountProfileDetails = () => {
                   type="number"
                   value={values.phone}
                 />
-              </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Country"
-                  name="country"
-                  onChange={handleChange}
-                  required
-                  value={values.country}
-                />
-              </Grid>
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="Select State"
-                  name="state"
-                  onChange={handleChange}
-                  required
-                  select
-                  SelectProps={{ native: true }}
-                  value={values.state}
-                >
-                  {states.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
               </Grid>
             </Grid>
           </Box>

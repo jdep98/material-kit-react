@@ -16,6 +16,7 @@ import {
 import { alpha } from '@mui/material/styles';
 import { usePopover } from 'src/hooks/use-popover';
 import { AccountPopover } from './account-popover';
+import jwt_decode from 'jwt-decode';
 
 const SIDE_NAV_WIDTH = 280;
 const TOP_NAV_HEIGHT = 64;
@@ -25,10 +26,16 @@ export const TopNav = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const accountPopover = usePopover();
 
-  // Recupera el objeto 'user' de sessionStorage
-  const userString = window.sessionStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
-  const userAvatar = user ? user.avatar : '/assets/avatars/avatar-anika-visser.png';
+  const token = window.sessionStorage.getItem('token');
+  let user = null;
+
+  if (token) {
+    try {
+      user = jwt_decode(token);      
+    } catch (error) {
+      console.error('Error decoding the token:', error);
+    }
+  }
 
   return (
     <>
@@ -111,7 +118,7 @@ export const TopNav = (props) => {
                 height: 40,
                 width: 40
               }}
-              src={userAvatar}
+              src={user.avatar}
             />
           </Stack>
         </Stack>

@@ -3,16 +3,26 @@ import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/material';
 import { useAuth } from 'src/hooks/use-auth';
+import jwt_decode from 'jwt-decode';
 
 export const AccountPopover = (props) => {
   const { anchorEl, onClose, open } = props;
   const router = useRouter();
   const auth = useAuth();
 
-  // Recupera el objeto 'user' de sessionStorage
-  const userString = window.sessionStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
-  const userName = user ? user.name : 'Guest';
+  const token = window.sessionStorage.getItem('token');
+  let user = null;
+
+  if (token) {
+    try {
+      user = jwt_decode(token);      
+    } catch (error) {
+      console.error('Error decoding the token:', error);
+    }
+  }
+
+
+  
 
   const handleSignOut = useCallback(
     () => {
@@ -50,7 +60,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          {userName}
+          {user.firstName} {user.lastName}
         </Typography>
       </Box>
       <Divider />

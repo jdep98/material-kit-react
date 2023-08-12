@@ -8,62 +8,61 @@ import {
   Divider,
   Typography
 } from '@mui/material';
+import jwt_decode from 'jwt-decode';
 
-const user = {
-  avatar: '/assets/avatars/avatar-anika-visser.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Anika Visser',
-  timezone: 'GTM-7'
-};
+export const AccountProfile = () => {
+  const token = window.sessionStorage.getItem('token');
+  let user = null;
 
-export const AccountProfile = () => (
-  <Card>
-    <CardContent>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Avatar
-          src={user.avatar}
+  if (token) {
+    try {
+      user = jwt_decode(token);      
+    } catch (error) {
+      console.error('Error decoding the token:', error);
+    }
+  }
+
+  return (
+    <Card>
+      <CardContent>
+        <Box
           sx={{
-            height: 80,
-            mb: 2,
-            width: 80
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column'
           }}
-        />
-        <Typography
-          gutterBottom
-          variant="h5"
         >
-          {user.name}
-        </Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
+          <Avatar
+            src={user.avatar}
+            sx={{
+              height: 80,
+              mb: 2,
+              width: 80
+            }}
+          />
+          <Typography
+            gutterBottom
+            variant="h5"
+          >
+            {user.firstName} {user.lastName}
+          </Typography>
+          <Typography
+            color="text.secondary"
+            variant="body2"
+          >
+            {user.role}
+          </Typography>
+        </Box>
+      </CardContent>
+      <Divider />
+      <CardActions>
+        <Button
+          fullWidth
+          variant="text"
         >
-          {user.city} {user.country}
-        </Typography>
-        <Typography
-          color="text.secondary"
-          variant="body2"
-        >
-          {user.timezone}
-        </Typography>
-      </Box>
-    </CardContent>
-    <Divider />
-    <CardActions>
-      <Button
-        fullWidth
-        variant="text"
-      >
-        Upload picture
-      </Button>
-    </CardActions>
-  </Card>
-);
+          Upload picture
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
