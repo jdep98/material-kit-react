@@ -25,6 +25,11 @@ export const TopNav = (props) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const accountPopover = usePopover();
 
+  // Recupera el objeto 'user' de sessionStorage
+  const userString = window.sessionStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const userAvatar = user ? user.avatar : '/assets/avatars/avatar-anika-visser.png';
+
   return (
     <>
       <Box
@@ -106,7 +111,7 @@ export const TopNav = (props) => {
                 height: 40,
                 width: 40
               }}
-              src="/assets/avatars/avatar-anika-visser.png"
+              src={userAvatar}
             />
           </Stack>
         </Stack>

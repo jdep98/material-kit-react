@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import jwt_decode from "jwt-decode";
+
 
 const HANDLERS = {
   INITIALIZE: 'INITIALIZE',
@@ -63,7 +65,7 @@ export const AuthContext = createContext({ undefined });
 export const AuthProvider = (props) => {
   const { children } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
-  const initialized = useRef(false);
+  const initialized = useRef(false);  
 
   const initialize = async () => {
     // Prevent from calling twice in development mode with React.StrictMode enabled
@@ -81,13 +83,9 @@ export const AuthProvider = (props) => {
       console.error(err);
     }
 
-    if (isAuthenticated) {
-      const user = {
-        id: '5e86809283e28b96d2d38537',
-        avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'anika.visser@devias.io'
-      };
+    if (isAuthenticated) {      
+      const userString = window.sessionStorage.getItem('user');
+      const user = JSON.parse(userString);
 
       dispatch({
         type: HANDLERS.INITIALIZE,
@@ -106,27 +104,7 @@ export const AuthProvider = (props) => {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
-  );
-
-  const skip = () => {
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
+  );  
 
   const signIn = async (email, password) => {
     try {
@@ -137,13 +115,16 @@ export const AuthProvider = (props) => {
         });
 
         // Si la autenticación es exitosa, almacenar el token y los datos del usuario
-        const { token, user } = response.data;
+        const { token, user, data } = response.data;
 
         // Almacenar el token en sessionStorage (opcional)
         window.sessionStorage.setItem('token', token);
 
         // Almacenar el estado de autenticación
-        window.sessionStorage.setItem('authenticated', 'true');
+        window.sessionStorage.setItem('authenticated', 'true'); 
+        
+        // Almacenar los datos del usuario
+        window.sessionStorage.setItem('user', JSON.stringify(data));        
 
         // Despachar la acción con los datos del usuario
         dispatch({
@@ -175,8 +156,7 @@ export const AuthProvider = (props) => {
   return (
     <AuthContext.Provider
       value={{
-        ...state,
-        skip,
+        ...state,        
         signIn,
         signUp,
         signOut

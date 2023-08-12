@@ -61,7 +61,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Login | Devias Kit
+          Login | NexoAdmin
         </title>
       </Head>
       <Box

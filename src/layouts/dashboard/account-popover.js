@@ -9,11 +9,19 @@ export const AccountPopover = (props) => {
   const router = useRouter();
   const auth = useAuth();
 
+  // Recupera el objeto 'user' de sessionStorage
+  const userString = window.sessionStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const userName = user ? user.name : 'Guest';
+
   const handleSignOut = useCallback(
     () => {
       onClose?.();
       auth.signOut();
       router.push('/auth/login');
+
+      // Borra todos los datos en sessionStorage
+      window.sessionStorage.clear();
     },
     [onClose, auth, router]
   );
@@ -42,7 +50,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          Anika Visser
+          {userName}
         </Typography>
       </Box>
       <Divider />
