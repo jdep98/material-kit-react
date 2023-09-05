@@ -60,7 +60,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          {user.firstName} {user.lastName}
+          {user ? user.firstName + ' ' + user.lastName : null}
         </Typography>
       </Box>
       <Divider />

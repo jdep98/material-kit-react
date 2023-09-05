@@ -5,6 +5,7 @@ import ShoppingBagIcon from '@heroicons/react/24/solid/ShoppingBagIcon';
 import UserIcon from '@heroicons/react/24/solid/UserIcon';
 import UserPlusIcon from '@heroicons/react/24/solid/UserPlusIcon';
 import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
+import ShieldCheckIcon from '@heroicons/react/24/solid/ShieldCheckIcon';
 import XCircleIcon from '@heroicons/react/24/solid/XCircleIcon';
 import { SvgIcon } from '@mui/material';
 
@@ -19,20 +20,29 @@ export const items = [
     )
   },
   {
-    title: 'Customers',
-    path: '/customers',
+    title: 'Registros',
+    path: '/medical-records',
     icon: (
       <SvgIcon fontSize="small">
-        <UsersIcon />
+        <ShieldCheckIcon />
       </SvgIcon>
     )
   },
   {
-    title: 'Companies',
-    path: '/companies',
+    title: 'Altas Dr1',
+    path: '/medical-discharges',
     icon: (
       <SvgIcon fontSize="small">
-        <ShoppingBagIcon />
+        <ShieldCheckIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    title: 'Agentes',
+    path: '/agents',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
       </SvgIcon>
     )
   },

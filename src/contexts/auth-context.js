@@ -114,7 +114,7 @@ const initialize = async () => {
   const signIn = async (email, password) => {
     try {
         // Hacer una petición POST al endpoint de inicio de sesión
-        const response = await axios.post('http://localhost:5000/login', {
+        const response = await axios.post(process.env.NEXT_PUBLIC_URL_HOST + '/login', {
             email,
             password
         });
